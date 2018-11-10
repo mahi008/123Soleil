@@ -1,33 +1,30 @@
-def check_var_type(lat, lon):
+from flask import abort
+def process_coordinates(lat, lng):
+    '''Convert the param to float and check the coverage range'''
+    f_lat, f_lng = float(lat), float(lng)
+    latitude = 0.00
 
-    lat = float(lat)
-    lon = float(lon)
-
-    data = {}
-
-    isOfTypeNum = is_number(lat) and is_number(lon)
-    isValidCoordinates = check_coordinates(lat, lon)
-
-    if isOfTypeNum and isValidCoordinates:
-        data = {"lt":lat, "ln": lon, "error": None}
+    isValidCoordinates = check_coordinates(f_lat, f_lng)
+    if isValidCoordinates:
+        latitude = f_lat
     else:
-        data = {"lt":None, "ln": None, "error": "Unknown error occurred"}
+        print("Out of coverage area")
+        abort(403)
+    return latitude
 
-    return data
 
-
-def check_coordinates(lat, lon):
-    return 41.00 <= lat <= 51.50 and -5.50 <= lon <= 10.00
-
-def calculate_irradiance(lat):
-    irradiance = 2000.0 - 900.0 * (lat - 41.0) / (51.50 - 41.0)
-    return irradiance
+def check_coordinates(lat, lng):
+    return 41.00 <= lat <= 51.50 and -5.50 <= lng <= 10.00
 
 
 def is_number(n):
     try:
         float(n)
-
     except ValueError:
         return False
     return True
+
+def calculate_irradiance(lat):
+    '''Calculate the irradience using the given formula'''
+    irradiance = 2000.0 - 900.0 * (lat - 41.0) / (51.50 - 41.0)
+    return irradiance

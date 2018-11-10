@@ -13,19 +13,19 @@ def index_route():
 
 @app.route("/data")
 def data_route():
-    lat_coor = request.args.get("lat")
-    lon_coor = request.args.get("lon")
+
+    '''Get parmas from url'''
+    lat_coor = request.args.get("lat") if request.args.get("lat") else None
+    lng_coor = request.args.get("lng") if request.args.get("lng") else None
 
     irradiance = {}
 
-    if lat_coor and lon_coor:
-        data = check_var_type(lat_coor, lon_coor)
+    '''Check if the value is number and validate the coordinates'''
+    if is_number(lat_coor) and is_number(lng_coor):
+        processed_lat = process_coordinates(lat_coor, lng_coor)
+        irradiance = {"result": calculate_irradiance(processed_lat)}
     else:
-        abort(403)
-
-    if not data["error"]:
-        irradiance = {"result" : calculate_irradiance(data["lt"])}
-    else:
+        print("Missing url parameters or the params given is not the correct type")
         abort(403)
 
     return jsonify(irradiance)

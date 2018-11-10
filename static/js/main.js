@@ -9,10 +9,11 @@ function initMap() {
 
     google.maps.event.addListener(map, 'click', function(e) {
         latLng = e.latLng;
-        // if marker exists and has a .setMap method, hide it
+        // if marker exists, hide it
         if (marker && marker.setMap) {
             marker.setMap(null);
         }
+
         marker = new google.maps.Marker({
             position: latLng,
             map: map,
@@ -25,11 +26,11 @@ function initMap() {
 
 function fire_api(lat, lng){
     var endpoint = "/data";
-    $.getJSON( endpoint, { lat: lat, lon: lng } )
+    $.getJSON( endpoint, { lat: lat, lng: lng } )
         .done(function( json ) {
             $('.result').html("<h3>" + json.result + "</h3>")
         })
         .fail(function( jqxhr, textStatus, error ) {
-             $('.result').html("<h3> Oopsy! out of coverage area :(</h3>")
-    });
+            $('.result').html("<h3> Oopsy! out of coverage area :(</h3>")
+        });
 }
